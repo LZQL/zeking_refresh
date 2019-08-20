@@ -8,10 +8,10 @@ import 'zeking_load_fail_widget.dart';
 import 'zeking_load_no_more_widget.dart';
 import 'zeking_loading_widget.dart';
 
-import 'refresh_physics.dart';
+import 'zeking_refresh_physics.dart';
 import 'zeking_refresh_indicator.dart';
 
-import 'utils/toast_util.dart';
+import 'utils/zeking_toast_util.dart';
 
 typedef OnRefresh = Future<void> Function();
 
@@ -49,7 +49,7 @@ class ZekingRefresh extends StatefulWidget {
   final ScrollPhysics physics;
   final bool useScrollController; // 是否自动绑定scrollController
 
-  // 刷新 加载中 widget （这个一般用在 1.初次加载页面，2. 初次加载页面 失败 后重试 ，3. 刷新后空数据页面重试）
+  // 刷新 加载中 widget
   final Widget refreshLoadingWidget;
   final String refreshLoadingImagePath;
 
@@ -198,14 +198,14 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
             ZekingRefreshStatus.Refresh_Faild ||
         widget.controller.refreshMode.value ==
             ZekingRefreshStatus.Refresh_Empty) {
-      if (widget.controller.refreshEndWithToastMessage.value != null &&
-          widget.controller.refreshEndWithToastMessage.value != '') {
+      if (widget.controller._refreshEndWithToastMessage.value != null &&
+          widget.controller._refreshEndWithToastMessage.value != '') {
         if (widget.toastMethod == null) {
-          ToastUtil.showShort(
-              widget.controller.refreshEndWithToastMessage.value, context);
+          ZekingToastUtil.showShort(
+              widget.controller._refreshEndWithToastMessage.value, context);
         } else {
           widget
-              .toastMethod(widget.controller.refreshEndWithToastMessage.value);
+              .toastMethod(widget.controller._refreshEndWithToastMessage.value);
         }
       }
     }
@@ -217,28 +217,28 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
             ZekingRefreshStatus.LoadMore_NoMore ||
         widget.controller.refreshMode.value ==
             ZekingRefreshStatus.LoadMore_Success) {
-      if (widget.controller.loadMoreEndWithToastMessage.value != null &&
-          widget.controller.loadMoreEndWithToastMessage.value != '') {
+      if (widget.controller._loadMoreEndWithToastMessage.value != null &&
+          widget.controller._loadMoreEndWithToastMessage.value != '') {
         if (widget.toastMethod == null) {
-          ToastUtil.showShort(
-              widget.controller.loadMoreEndWithToastMessage.value, context);
+          ZekingToastUtil.showShort(
+              widget.controller._loadMoreEndWithToastMessage.value, context);
         } else {
           widget
-              .toastMethod(widget.controller.loadMoreEndWithToastMessage.value);
+              .toastMethod(widget.controller._loadMoreEndWithToastMessage.value);
         }
       }
     }
 
     // 业务逻辑 加载中 结束
     if (widget.controller.refreshMode.value == ZekingRefreshStatus.LoadingEnd) {
-      if (widget.controller.loadingEndWithToastMessage.value != null &&
-          widget.controller.loadingEndWithToastMessage.value != '') {
+      if (widget.controller._loadingEndWithToastMessage.value != null &&
+          widget.controller._loadingEndWithToastMessage.value != '') {
         if (widget.toastMethod == null) {
-          ToastUtil.showShort(
-              widget.controller.loadingEndWithToastMessage.value, context);
+          ZekingToastUtil.showShort(
+              widget.controller._loadingEndWithToastMessage.value, context);
         } else {
           widget
-              .toastMethod(widget.controller.loadingEndWithToastMessage.value);
+              .toastMethod(widget.controller._loadingEndWithToastMessage.value);
         }
       }
     }
@@ -286,7 +286,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
             imageWith: widget.refreshEmptyImageWidth,
             imageHeight: widget.refreshEmptyImageHeight,
             centerPadding: widget.refreshEmptyCenterPadding,
-            message: widget.controller.refreshEmptyTip.value ??
+            message: widget.controller._refreshEmptyTip.value ??
                 widget.refreshEmptyMessage);
       } else {
         refreshEmptyWidget = ZekingRefreshEmptyWidget(
@@ -308,7 +308,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
             imageWith: widget.refreshFailImageWidth,
             imageHeight: widget.refreshFailImageHeight,
             centerPadding: widget.refreshFailCenterPadding,
-            message: widget.controller.refreshFaildTip.value ??
+            message: widget.controller._refreshFaildTip.value ??
                 widget.refreshFailMessage);
       } else {
         refreshFailWidget = ZekingRefreshFailWidget(
@@ -347,7 +347,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         if (widget.loadFailWidget == null) {
           footWidget = ZekingLoadFailWidget(
               controller: widget.controller,
-              message: widget.controller.loadMoreFaildTip.value ??
+              message: widget.controller._loadMoreFaildTip.value ??
                   widget.loadFailMessage);
         } else {
           footWidget = ZekingLoadFailWidget(
@@ -357,7 +357,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
           ZekingRefreshStatus.LoadMore_NoMore) {
         if (widget.loadFailWidget == null) {
           footWidget = ZekingLoadNoMoreWidget(
-              message: widget.controller.loadMoreNoMoreTip.value ??
+              message: widget.controller._loadMoreNoMoreTip.value ??
                   widget.loadNoMoreMessage);
         } else {
           footWidget = ZekingLoadNoMoreWidget(child: widget.loadNoMoreWidget);
@@ -386,7 +386,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         child: CustomScrollView(
           controller: widget.useScrollController ? _scrollController : null,
           physics:
-          widget.physics ?? RefreshScrollPhysics(enableOverScroll: false),
+          widget.physics ?? ZekingRefreshScrollPhysics(enableOverScroll: false),
           slivers: List.from(slivers, growable: true),
         ),
       );
@@ -394,7 +394,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       rootChild = CustomScrollView(
         controller: widget.useScrollController ? _scrollController : null,
         physics:
-        widget.physics ?? RefreshScrollPhysics(enableOverScroll: false),
+        widget.physics ?? ZekingRefreshScrollPhysics(enableOverScroll: false),
         slivers: List.from(slivers, growable: true),
       );
     }
@@ -430,33 +430,33 @@ class ZekingRefreshController {
   ValueNotifier<ZekingRefreshStatus> refreshMode =
   new ValueNotifier(ZekingRefreshStatus.IDLE);
 
-  ValueNotifier<String> refreshFaildTip = new ValueNotifier(null);
-  ValueNotifier<String> refreshEmptyTip = new ValueNotifier(null);
-  ValueNotifier<String> refreshEndWithToastMessage = new ValueNotifier(null);
+  ValueNotifier<String> _refreshFaildTip = new ValueNotifier(null);
+  ValueNotifier<String> _refreshEmptyTip = new ValueNotifier(null);
+  ValueNotifier<String> _refreshEndWithToastMessage = new ValueNotifier(null);
 
-  ValueNotifier<String> loadMoreFaildTip = new ValueNotifier(null);
-  ValueNotifier<String> loadMoreNoMoreTip = new ValueNotifier(null);
-  ValueNotifier<String> loadMoreEndWithToastMessage = new ValueNotifier(null);
+  ValueNotifier<String> _loadMoreFaildTip = new ValueNotifier(null);
+  ValueNotifier<String> _loadMoreNoMoreTip = new ValueNotifier(null);
+  ValueNotifier<String> _loadMoreEndWithToastMessage = new ValueNotifier(null);
 
-  ValueNotifier<String> loadingEndWithToastMessage = new ValueNotifier(null);
+  ValueNotifier<String> _loadingEndWithToastMessage = new ValueNotifier(null);
 
   /// 下拉刷新， 成功
   void refreshSuccess({String toastMsg}) {
-    refreshEndWithToastMessage?.value = toastMsg;
+    _refreshEndWithToastMessage?.value = toastMsg;
     refreshMode?.value = ZekingRefreshStatus.Refresh_Success;
   }
 
   /// 下拉刷新， 失败
   void refreshFaild({String uiMsg, String toastMsg}) {
-    refreshEndWithToastMessage?.value = toastMsg;
-    refreshFaildTip?.value = uiMsg;
+    _refreshEndWithToastMessage?.value = toastMsg;
+    _refreshFaildTip?.value = uiMsg;
     refreshMode?.value = ZekingRefreshStatus.Refresh_Faild;
   }
 
   /// 下拉刷新，空数据
   void refreshEmpty({String uiMsg, String toastMsg}) {
-    refreshEndWithToastMessage?.value = toastMsg;
-    refreshEmptyTip?.value = uiMsg;
+    _refreshEndWithToastMessage?.value = toastMsg;
+    _refreshEmptyTip?.value = uiMsg;
     refreshMode?.value = ZekingRefreshStatus.Refresh_Empty;
   }
 
@@ -475,23 +475,23 @@ class ZekingRefreshController {
 
   /// 加载更多 成功
   void loadMoreSuccess({String toastMsg}) {
-    loadMoreEndWithToastMessage?.value = toastMsg;
+    _loadMoreEndWithToastMessage?.value = toastMsg;
     refreshMode?.value = ZekingRefreshStatus.LoadMore_Success;
 //    print('loadSuccess');
   }
 
   /// 加载更多 失败
   void loadMoreFailed({String uiMsg, String toastMsg}) {
-    loadMoreEndWithToastMessage?.value = toastMsg;
-    loadMoreFaildTip?.value = uiMsg;
+    _loadMoreEndWithToastMessage?.value = toastMsg;
+    _loadMoreFaildTip?.value = uiMsg;
     refreshMode?.value = ZekingRefreshStatus.LoadMore_Faild;
 //    print('loadFailed');
   }
 
   /// 加载更多 没有更多内容了
   void loadMoreNoMore({String uiMsg, String toastMsg}) {
-    loadMoreEndWithToastMessage?.value = toastMsg;
-    loadMoreNoMoreTip?.value = uiMsg;
+    _loadMoreEndWithToastMessage?.value = toastMsg;
+    _loadMoreNoMoreTip?.value = uiMsg;
     refreshMode?.value = ZekingRefreshStatus.LoadMore_NoMore;
 //    print('loadNoMore');
   }
@@ -504,7 +504,7 @@ class ZekingRefreshController {
   }
 
   void loadingEnd({String toastMsg}) {
-    loadingEndWithToastMessage?.value = toastMsg;
+    _loadingEndWithToastMessage?.value = toastMsg;
     refreshMode?.value = ZekingRefreshStatus.LoadingEnd;
   }
 

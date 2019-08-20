@@ -60,7 +60,9 @@ class _ZekingRefreshLoadingViewState extends State<ZekingRefreshLoadingView>
 
   @override
   void dispose() {
-    controller.dispose();
+    if(controller!=null){
+      controller.dispose();
+    }
     super.dispose();
   }
 }

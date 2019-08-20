@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'toast.dart';
 
-class ToastUtil{
+class ZekingToastUtil{
   static showShort(String msg, BuildContext context){
     Toast.show(msg, context,duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
   }
