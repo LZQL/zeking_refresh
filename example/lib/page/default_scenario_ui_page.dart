@@ -109,6 +109,7 @@ class _DefaultScenarioUiPageState extends State<DefaultScenarioUiPage> {
   }
 
   void onLoading() {
+    print('onLoading');
     Future.delayed(Duration(seconds: 3), () {
       for (int i = (addIndex - 1) * 20; i < 20 * addIndex; i++) {
         data.add('add index:${i}');

@@ -10,7 +10,7 @@
 
 ```
 dependencies:
-  zeking_refresh: ^0.0.4
+  zeking_refresh: ^0.0.5
 ```
 
 ### 2. 安装
