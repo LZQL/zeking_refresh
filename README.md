@@ -10,7 +10,7 @@
 
 ```
 dependencies:
-  zeking_refresh: ^0.0.4
+  zeking_refresh: ^0.0.5
 ```
 
 ### 2. 安装
@@ -146,16 +146,16 @@ ZekingRefresh({
 |refreshEmptyWidget                              |  自定义的 刷新 空数据 的 widget |
 |refreshEmptyMessage                             |  设置框架 默认 刷新 空数据 widget 的 提示语 （ 默认为 ： '暂无数据，请点击屏幕重试' ） |
 |refreshEmptyImagePath                           |  设置框架 默认 刷新 空数据 widget 的 图片路径，（图片和提示语的位置是居中，图片在上，提示语在下） |
-|refreshEmptyImageWidth                          |  设置框架 默认 刷新 空数据 widget 的 图片 宽度 ，默认 136|
-|refreshEmptyImageHeight                         |  设置框架 默认 刷新 空数据 widget 的 图片 高度 ， 默认 122|
-|refreshEmptyCenterPadding                       |  设置框架 默认 刷新 空数据 widget 的 图片 和 提示语 的间隔，默认 36|
+|refreshEmptyImageWidth                          |  设置框架 默认 刷新 空数据 widget 的 图片 宽度 ，（ 默认 136 ）|
+|refreshEmptyImageHeight                         |  设置框架 默认 刷新 空数据 widget 的 图片 高度 ， （ 默认 122 ）|
+|refreshEmptyCenterPadding                       |  设置框架 默认 刷新 空数据 widget 的 图片 和 提示语 的间隔，（ 默认 36 ）|
 |======================                          |======================|
 |refreshFailWidget                               |  自定义的 刷新 失败 widget |
 |refreshFailMessage                              |  设置框架 默认 刷新 失败 widget 的 提示语 （ 默认为 ： '加载失败，请点击屏幕重试' ）|
 |refreshFailImagePath                            |  设置框架 默认 刷新 失败 widget 的 图片路径 ，（图片和提示语的位置是居中，图片在上，提示语在下）|
-|refreshFailImageWidth                           |  设置框架 默认 刷新 失败 widget 的 图片 宽度 ，默认 136|
-|refreshFailImageHeight                          |  设置框架 默认 刷新 失败 widget 的 图片 高度 ， 默认 122|
-|refreshFailCenterPadding                        |  设置框架 默认 刷新 失败 widget 的 图片 和 提示语 的间隔，默认 36|
+|refreshFailImageWidth                           |  设置框架 默认 刷新 失败 widget 的 图片 宽度 ，（ 默认 136 ）|
+|refreshFailImageHeight                          |  设置框架 默认 刷新 失败 widget 的 图片 高度 ， （ 默认 122 ）|
+|refreshFailCenterPadding                        |  设置框架 默认 刷新 失败 widget 的 图片 和 提示语 的间隔，（ 默认 36 ）|
 |======================                          |======================|
 |loadLoadingWidget                               | 自定义的  加载更多 加载中 widget |
 |loadLoadingMessage                              | 设置框架 默认 的 加载更多 加载中 widget的提示语（ 默认为： '正在加载更多数据' ）|
