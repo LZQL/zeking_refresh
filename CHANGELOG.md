@@ -1,5 +1,6 @@
 
 # ChangeLog
+## 0.0.6  修复多次调用onLoading方法的bug
 ## 0.0.5  更新文档说明,修复和NestedScrollView一起使用的时候的bug
 ## 0.0.4  更新文档说明
 ## 0.0.3  修复小问题

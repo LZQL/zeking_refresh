@@ -116,7 +116,8 @@ class _DefaultScenarioUiPageState extends State<DefaultScenarioUiPage> {
       }
       addIndex += 1;
       setState(() {});
+      _refreshController.loadMoreSuccess(toastMsg:'load more success');
     });
-    _refreshController.loadMoreSuccess();
+
   }
 }

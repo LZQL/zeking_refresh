@@ -28,6 +28,7 @@ enum ZekingRefreshStatus {
   Refresh_Faild_With_Toast,
   Refresh_Empty,
   LoadMoreing,
+  LoadMoreing_ing,
   LoadMore_Success,
   LoadMore_Faild,
   LoadMore_NoMore,
@@ -139,6 +140,9 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
   void initState() {
     super.initState();
 
+    /// 状态改变监听
+    widget.controller.refreshMode.addListener(_handleRefreshValueChanged);
+
 //    if (widget.useScrollController) {
       if (widget.scrollController == null) {
         _scrollController = widget.child is ScrollView &&
@@ -150,6 +154,8 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       }
 //    }
 
+
+
     if (widget.canLoadMore) {
       /// 监听滚动事件
       _scrollController.addListener(() {
@@ -159,19 +165,21 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
           if (widget.controller.refreshMode.value !=
               ZekingRefreshStatus.Refreshing_LoadingView &&
               widget.controller.refreshMode.value !=
+                  ZekingRefreshStatus.Refreshing_LoadingView_ing &&
+              widget.controller.refreshMode.value !=
                   ZekingRefreshStatus.Refreshing &&
               widget.controller.refreshMode.value !=
                   ZekingRefreshStatus.LoadMore_Faild &&
               widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.LoadMore_NoMore) {
+                  ZekingRefreshStatus.LoadMore_NoMore &&
+              widget.controller.refreshMode.value !=
+                  ZekingRefreshStatus.LoadMoreing_ing) {
+            widget.controller.refreshMode.value = ZekingRefreshStatus.LoadMoreing_ing;
             widget.onLoading();
           }
         }
       });
     }
-
-    /// 状态改变监听
-    widget.controller.refreshMode.addListener(_handleRefreshValueChanged);
   }
 
   void _handleRefreshValueChanged() {
@@ -184,7 +192,8 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
     if (widget.canLoadMore) {
       // 如果是 LoadMoreing  调用 加载更多方法
       if (widget.controller.refreshMode.value ==
-          ZekingRefreshStatus.LoadMoreing) {
+          ZekingRefreshStatus.LoadMoreing ) {
+        widget.controller.refreshMode.value = ZekingRefreshStatus.LoadMoreing_ing;
         widget.onLoading();
       }
     }
