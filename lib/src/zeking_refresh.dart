@@ -139,7 +139,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
   void initState() {
     super.initState();
 
-    if (widget.useScrollController) {
+//    if (widget.useScrollController) {
       if (widget.scrollController == null) {
         _scrollController = widget.child is ScrollView &&
             (widget.child as ScrollView).controller != null
@@ -148,7 +148,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       } else {
         _scrollController = widget.scrollController;
       }
-    }
+//    }
 
     if (widget.canLoadMore) {
       /// 监听滚动事件
