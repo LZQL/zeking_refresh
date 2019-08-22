@@ -428,13 +428,36 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       }
     } else {
       if (widget.canRefresh) {
-        rootChild = ZekingRefreshIndicator(
-          controller: widget.controller,
-          displacement:
-              widget.displacement == null ? 40.0 : widget.displacement,
-          onRefresh: widget.onRefresh,
-          child: widget.child,
-        );
+
+        if (widget.child is ScrollView) {
+          List<Widget> slivers;
+
+          slivers = List.from((widget.child as ScrollView).buildSlivers(context),
+              growable: true);
+
+          rootChild = ZekingRefreshIndicator(
+            controller: widget.controller,
+            displacement:
+            widget.displacement == null ? 40.0 : widget.displacement,
+            onRefresh: widget.onRefresh,
+            child: CustomScrollView(
+              controller: widget.useScrollController ? _scrollController : null,
+              physics: widget.physics ??
+                  ZekingRefreshScrollPhysics(enableOverScroll: false),
+              slivers: List.from(slivers, growable: true),
+            ),
+          );
+        } else {
+          rootChild = ZekingRefreshIndicator(
+            controller: widget.controller,
+            displacement:
+            widget.displacement == null ? 40.0 : widget.displacement,
+            onRefresh: widget.onRefresh,
+            child: widget.child,
+          );
+        }
+
+
       } else {
         rootChild = widget.child;
       }

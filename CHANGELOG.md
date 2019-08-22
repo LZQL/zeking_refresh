@@ -1,5 +1,11 @@
 
 # ChangeLog
+
+## 0.0.8
+
+    修复当canLoadMore为false，canRefresh为true的时候，
+    child为CustomScrollview，在IOS上面的滚动bug。
+
 ## 0.0.7
 
     1. onRefresh 属性不再是必填项目，根据canRefresh做判断
@@ -11,14 +17,27 @@
        使用到业务loading 这样的布局，就可以直接使用zeking_refresh
 
 ## 0.0.6
+
     修复多次调用onLoading方法的bug
+
 ## 0.0.5
+
     更新文档说明,修复和NestedScrollView一起使用的时候的bug
+
 ## 0.0.4
+
     更新文档说明
+
 ## 0.0.3
+
     修复小问题
+
 ## 0.0.2
+
     解决引用之后 项目跑不起来的bug
+
+
 ## 0.0.1
+
     初始化上传
+
