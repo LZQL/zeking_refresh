@@ -78,7 +78,6 @@ class ZekingRefresh extends StatefulWidget {
   final Widget loadFailWidget;
   final String loadFailMessage;
 
-
   // 加载更多 已加载全部数据 widget
   final Widget loadNoMoreWidget;
   final String loadNoMoreMessage;
@@ -88,38 +87,39 @@ class ZekingRefresh extends StatefulWidget {
 
   final Function toastMethod; // 支持 自定义 吐司
 
-  ZekingRefresh({@required this.controller,
-                  @required this.onRefresh,
-                  this.onLoading,
-                  this.child,
-                  this.displacement,
-                  this.canLoadMore = true,
-                  this.canRefresh = true,
-                  this.scrollController,
-                  this.physics,
-                  this.useScrollController = true,
-                  this.refreshLoadingWidget,
-                  this.refreshLoadingImagePath,
-                  this.refreshEmptyWidget,
-                  this.refreshEmptyMessage,
-                  this.refreshEmptyImagePath,
-                  this.refreshEmptyImageWidth,
-                  this.refreshEmptyImageHeight,
-                  this.refreshEmptyCenterPadding,
-                  this.refreshFailWidget,
-                  this.refreshFailMessage,
-                  this.refreshFailImagePath,
-                  this.refreshFailImageWidth,
-                  this.refreshFailImageHeight,
-                  this.refreshFailCenterPadding,
-                  this.loadLoadingWidget,
-                  this.loadLoadingMessage,
-                  this.loadFailWidget,
-                  this.loadFailMessage,
-                  this.loadNoMoreWidget,
-                  this.loadNoMoreMessage,
-                  this.loadingWidget,
-                  this.toastMethod});
+  ZekingRefresh(
+      {@required this.controller,
+      this.onRefresh,
+      this.onLoading,
+      this.child,
+      this.displacement,
+      this.canLoadMore = true,
+      this.canRefresh = true,
+      this.scrollController,
+      this.physics,
+      this.useScrollController = true,
+      this.refreshLoadingWidget,
+      this.refreshLoadingImagePath,
+      this.refreshEmptyWidget,
+      this.refreshEmptyMessage,
+      this.refreshEmptyImagePath,
+      this.refreshEmptyImageWidth,
+      this.refreshEmptyImageHeight,
+      this.refreshEmptyCenterPadding,
+      this.refreshFailWidget,
+      this.refreshFailMessage,
+      this.refreshFailImagePath,
+      this.refreshFailImageWidth,
+      this.refreshFailImageHeight,
+      this.refreshFailCenterPadding,
+      this.loadLoadingWidget,
+      this.loadLoadingMessage,
+      this.loadFailWidget,
+      this.loadFailMessage,
+      this.loadNoMoreWidget,
+      this.loadNoMoreMessage,
+      this.loadingWidget,
+      this.toastMethod});
 
   @override
   _ZekingRefreshState createState() => _ZekingRefreshState();
@@ -140,21 +140,27 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
   void initState() {
     super.initState();
 
+    if (widget.canRefresh) {
+      assert(widget.onRefresh != null);
+    }
+
+    if (widget.canLoadMore) {
+      assert(widget.onLoading != null);
+    }
+
     /// 状态改变监听
     widget.controller.refreshMode.addListener(_handleRefreshValueChanged);
 
 //    if (widget.useScrollController) {
-      if (widget.scrollController == null) {
-        _scrollController = widget.child is ScrollView &&
-            (widget.child as ScrollView).controller != null
-            ? (widget.child as ScrollView).controller
-            : new ScrollController();
-      } else {
-        _scrollController = widget.scrollController;
-      }
+    if (widget.scrollController == null) {
+      _scrollController = widget.child is ScrollView &&
+              (widget.child as ScrollView).controller != null
+          ? (widget.child as ScrollView).controller
+          : new ScrollController();
+    } else {
+      _scrollController = widget.scrollController;
+    }
 //    }
-
-
 
     if (widget.canLoadMore) {
       /// 监听滚动事件
@@ -163,7 +169,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         if (_scrollController.position.maxScrollExtent ==
             (_scrollController.position.pixels)) {
           if (widget.controller.refreshMode.value !=
-              ZekingRefreshStatus.Refreshing_LoadingView &&
+                  ZekingRefreshStatus.Refreshing_LoadingView &&
               widget.controller.refreshMode.value !=
                   ZekingRefreshStatus.Refreshing_LoadingView_ing &&
               widget.controller.refreshMode.value !=
@@ -174,7 +180,8 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
                   ZekingRefreshStatus.LoadMore_NoMore &&
               widget.controller.refreshMode.value !=
                   ZekingRefreshStatus.LoadMoreing_ing) {
-            widget.controller.refreshMode.value = ZekingRefreshStatus.LoadMoreing_ing;
+            widget.controller.refreshMode.value =
+                ZekingRefreshStatus.LoadMoreing_ing;
             widget.onLoading();
           }
         }
@@ -192,8 +199,9 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
     if (widget.canLoadMore) {
       // 如果是 LoadMoreing  调用 加载更多方法
       if (widget.controller.refreshMode.value ==
-          ZekingRefreshStatus.LoadMoreing ) {
-        widget.controller.refreshMode.value = ZekingRefreshStatus.LoadMoreing_ing;
+          ZekingRefreshStatus.LoadMoreing) {
+        widget.controller.refreshMode.value =
+            ZekingRefreshStatus.LoadMoreing_ing;
         widget.onLoading();
       }
     }
@@ -202,7 +210,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
 
     // 下拉刷新
     if (widget.controller.refreshMode.value ==
-        ZekingRefreshStatus.Refresh_Success ||
+            ZekingRefreshStatus.Refresh_Success ||
         widget.controller.refreshMode.value ==
             ZekingRefreshStatus.Refresh_Faild ||
         widget.controller.refreshMode.value ==
@@ -221,7 +229,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
 
     // 加载更多
     if (widget.controller.refreshMode.value ==
-        ZekingRefreshStatus.LoadMore_Faild ||
+            ZekingRefreshStatus.LoadMore_Faild ||
         widget.controller.refreshMode.value ==
             ZekingRefreshStatus.LoadMore_NoMore ||
         widget.controller.refreshMode.value ==
@@ -232,8 +240,8 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
           ZekingToastUtil.showShort(
               widget.controller._loadMoreEndWithToastMessage.value, context);
         } else {
-          widget
-              .toastMethod(widget.controller._loadMoreEndWithToastMessage.value);
+          widget.toastMethod(
+              widget.controller._loadMoreEndWithToastMessage.value);
         }
       }
     }
@@ -252,20 +260,25 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       }
     }
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    /// ======================== 初始化 刷新 加载中 widget ========================
+
     if (widget.refreshLoadingWidget == null) {
-      refreshLoadingWidget = ZekingRefreshLoadingView(imagePath: widget.refreshLoadingImagePath,);
+      refreshLoadingWidget = ZekingRefreshLoadingView(
+        imagePath: widget.refreshLoadingImagePath,
+      );
     } else {
       refreshLoadingWidget = ZekingRefreshLoadingView(
         child: widget.refreshLoadingWidget,
       );
     }
 
+    // 这个是刷新加载中的中间状态，为了防止多次调用onRefresh方法，
+    //（已知道情况，一个页面刚进来的时候同时调用多个接口，配合Bloc的情况下）
     if (widget.controller.refreshMode.value ==
         ZekingRefreshStatus.Refreshing_LoadingView_ing) {
       return refreshLoadingWidget;
@@ -278,16 +291,12 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       widget.controller.refreshMode.value =
           ZekingRefreshStatus.Refreshing_LoadingView_ing;
       return refreshLoadingWidget;
-//      return ZekingRefreshLoadingView();
     }
 
-    // 刷新 空数据
+    /// ======================== 初始化 刷新 空数据 widget ========================
+
     if (widget.controller.refreshMode.value ==
         ZekingRefreshStatus.Refresh_Empty) {
-//      return ZekingRefreshEmptyWidget(
-//        controller: widget.controller,
-//        message: widget.controller.refreshEmptyTip.value,
-//      );
       if (widget.refreshEmptyWidget == null) {
         refreshEmptyWidget = ZekingRefreshEmptyWidget(
             controller: widget.controller,
@@ -307,13 +316,14 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       return refreshEmptyWidget;
     }
 
-    // 刷新 失败
+    /// ======================== 初始化 刷新 失败 widget ========================
+
     if (widget.controller.refreshMode.value ==
         ZekingRefreshStatus.Refresh_Faild) {
       if (widget.refreshFailWidget == null) {
         refreshFailWidget = ZekingRefreshFailWidget(
             controller: widget.controller,
-            imagePath:widget.refreshFailImagePath,
+            imagePath: widget.refreshFailImagePath,
             imageWith: widget.refreshFailImageWidth,
             imageHeight: widget.refreshFailImageHeight,
             centerPadding: widget.refreshFailCenterPadding,
@@ -326,33 +336,39 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       return refreshFailWidget;
     }
 
-    List<Widget> slivers;
+    /// ======================== 初始化 业务 loading widget ========================
 
-    if (widget.child is ScrollView) {
-      slivers = List.from((widget.child as ScrollView).buildSlivers(context),
-          growable: true);
+    // 初始化 加载中 widget
+    //（场景：一般用户，事件的操作，比如 登录，上传数据，提交等操作场景）
+    if (widget.loadingWidget == null) {
+      loadingWidget = ZekingLoadingWidget();
     } else {
-      slivers = new List<Widget>();
-      slivers.add(SliverList(
-          delegate: SliverChildListDelegate(<Widget>[widget.child])));
+      loadingWidget = widget.loadingWidget;
     }
 
-    /// 是否支持加载更多
-    if (widget.canLoadMore) {
-      /// FootWidget 布局
-      Widget footWidget;
+    /// ================================================================================================
 
-//      = SliverToBoxAdapter(
-//          child: widget.controller.refreshMode.value ==
-//                  ZekingRefreshStatus.LoadMore_Faild
-//              ? loadFailWidget
-//              : (widget.controller.refreshMode.value ==
-//                      ZekingRefreshStatus.LoadMore_NoMore
-//                  ? loadNoMoreWidget
-//                  : loadLoadingWidget));
+    Widget rootChild;
+
+    // 如果支持加载更多，最后就转为CustomScrollview
+    if (widget.canLoadMore) {
+      List<Widget> slivers;
+
+      if (widget.child is ScrollView) {
+        slivers = List.from((widget.child as ScrollView).buildSlivers(context),
+            growable: true);
+      } else {
+        slivers = new List<Widget>();
+        slivers.add(SliverList(
+            delegate: SliverChildListDelegate(<Widget>[widget.child])));
+      }
+
+      // FootWidget
+      Widget footWidget;
 
       if (widget.controller.refreshMode.value ==
           ZekingRefreshStatus.LoadMore_Faild) {
+        // =========  加载更多 失败 widget =========
         if (widget.loadFailWidget == null) {
           footWidget = ZekingLoadFailWidget(
               controller: widget.controller,
@@ -364,6 +380,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         }
       } else if (widget.controller.refreshMode.value ==
           ZekingRefreshStatus.LoadMore_NoMore) {
+        // =========  加载更多 已加载全部数据 widget =========
         if (widget.loadFailWidget == null) {
           footWidget = ZekingLoadNoMoreWidget(
               message: widget.controller._loadMoreNoMoreTip.value ??
@@ -372,6 +389,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
           footWidget = ZekingLoadNoMoreWidget(child: widget.loadNoMoreWidget);
         }
       } else {
+        // =========  加载更多 loading widget =========
         if (widget.loadLoadingWidget == null) {
           footWidget =
               ZekingLoadLoadingWidget(message: widget.loadLoadingMessage);
@@ -383,36 +401,43 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       }
 
 //      slivers.add(footWidget);
-      slivers.add(SliverToBoxAdapter(child: footWidget,));
-    }
+      slivers.add(SliverToBoxAdapter(
+        child: footWidget,
+      ));
 
-    Widget rootChild;
-    if (widget.canRefresh) {
-      rootChild = ZekingRefreshIndicator(
-        controller: widget.controller,
-        displacement: widget.displacement == null ? 40.0 : widget.displacement,
-        onRefresh: widget.onRefresh,
-        child: CustomScrollView(
+      if (widget.canRefresh) {
+        rootChild = ZekingRefreshIndicator(
+          controller: widget.controller,
+          displacement:
+              widget.displacement == null ? 40.0 : widget.displacement,
+          onRefresh: widget.onRefresh,
+          child: CustomScrollView(
+            controller: widget.useScrollController ? _scrollController : null,
+            physics: widget.physics ??
+                ZekingRefreshScrollPhysics(enableOverScroll: false),
+            slivers: List.from(slivers, growable: true),
+          ),
+        );
+      } else {
+        rootChild = CustomScrollView(
           controller: widget.useScrollController ? _scrollController : null,
-          physics:
-          widget.physics ?? ZekingRefreshScrollPhysics(enableOverScroll: false),
+          physics: widget.physics ??
+              ZekingRefreshScrollPhysics(enableOverScroll: false),
           slivers: List.from(slivers, growable: true),
-        ),
-      );
+        );
+      }
     } else {
-      rootChild = CustomScrollView(
-        controller: widget.useScrollController ? _scrollController : null,
-        physics:
-        widget.physics ?? ZekingRefreshScrollPhysics(enableOverScroll: false),
-        slivers: List.from(slivers, growable: true),
-      );
-    }
-
-    // 初始化 加载中 widget （一般用户，事件的操作，比如 登录，上传数据，提交等操作场景）
-    if (widget.loadingWidget == null) {
-      loadingWidget = ZekingLoadingWidget();
-    } else {
-      loadingWidget = widget.loadingWidget;
+      if (widget.canRefresh) {
+        rootChild = ZekingRefreshIndicator(
+          controller: widget.controller,
+          displacement:
+              widget.displacement == null ? 40.0 : widget.displacement,
+          onRefresh: widget.onRefresh,
+          child: widget.child,
+        );
+      } else {
+        rootChild = widget.child;
+      }
     }
 
     return Stack(
@@ -425,6 +450,8 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         )
       ],
     );
+
+    /// ================================================================================================
   }
 
   @override
@@ -437,7 +464,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
 
 class ZekingRefreshController {
   ValueNotifier<ZekingRefreshStatus> refreshMode =
-  new ValueNotifier(ZekingRefreshStatus.IDLE);
+      new ValueNotifier(ZekingRefreshStatus.IDLE);
 
   ValueNotifier<String> _refreshFaildTip = new ValueNotifier(null);
   ValueNotifier<String> _refreshEmptyTip = new ValueNotifier(null);

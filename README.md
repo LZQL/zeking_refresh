@@ -10,7 +10,7 @@
 
 ```
 dependencies:
-  zeking_refresh: ^0.0.5
+  zeking_refresh: ^0.0.7
 ```
 
 ### 2. 安装
@@ -44,7 +44,7 @@ import 'package:zeking_refresh/zeking_refresh.dart';
     return Scaffold(
       body: ZekingRefresh(
         controller: _refreshController,  // 必须参数
-        onRefresh: onRefresh,            // 目前是必须参数，后面版本看看是否修改
+        onRefresh: onRefresh,
         onLoading: onLoading,
         child: ListView.builder(
           padding: EdgeInsets.all(0),
@@ -132,7 +132,7 @@ ZekingRefresh({
 |controller                                      | 其实就是 ZekingRefreshController 用来控制不同场景的切换        |
 |onRefresh                                       | 刷新方法|
 |onLoading                                       | 加载更多方法|
-|child                                           | 其实最后都会转为CustomScrollview，所以写特殊布局的时候需要注意一下|
+|child                                           | 只有支持了加载更多，最后才会转为CustomScrollview，剩下的不会|
 |displacement                                    | 下拉刷新圈圈的偏移量，默认是40|
 |canLoadMore                                     | 是否支持加载更多，默认 true|
 |canRefresh                                      | 是否支持 下拉刷新，默认 true|
