@@ -32,9 +32,15 @@ enum ZekingRefreshStatus {
   LoadMore_Success,
   LoadMore_Faild,
   LoadMore_NoMore,
+
+//  LoadingEndWithToast
+}
+
+/// 业务 loading 状态
+enum ZekingLoadingStatus{
+  IDLE,
   Loading,
   LoadingEnd,
-//  LoadingEndWithToast
 }
 
 class ZekingRefresh extends StatefulWidget {
@@ -150,6 +156,7 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
 
     /// 状态改变监听
     widget.controller.refreshMode.addListener(_handleRefreshValueChanged);
+    widget.controller.loadingMode.addListener(_handleLoadingValueChanged);
 
 //    if (widget.useScrollController) {
     if (widget.scrollController == null) {
@@ -187,6 +194,24 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         }
       });
     }
+  }
+
+  void _handleLoadingValueChanged(){
+    // 业务逻辑 加载中 结束
+    if (widget.controller.loadingMode.value == ZekingLoadingStatus.LoadingEnd) {
+      if (widget.controller._loadingEndWithToastMessage.value != null &&
+          widget.controller._loadingEndWithToastMessage.value != '') {
+        if (widget.toastMethod == null) {
+          ZekingToastUtil.showShort(
+              widget.controller._loadingEndWithToastMessage.value, context);
+        } else {
+          widget
+              .toastMethod(widget.controller._loadingEndWithToastMessage.value);
+        }
+      }
+    }
+
+    setState(() {});
   }
 
   void _handleRefreshValueChanged() {
@@ -242,20 +267,6 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
         } else {
           widget.toastMethod(
               widget.controller._loadMoreEndWithToastMessage.value);
-        }
-      }
-    }
-
-    // 业务逻辑 加载中 结束
-    if (widget.controller.refreshMode.value == ZekingRefreshStatus.LoadingEnd) {
-      if (widget.controller._loadingEndWithToastMessage.value != null &&
-          widget.controller._loadingEndWithToastMessage.value != '') {
-        if (widget.toastMethod == null) {
-          ZekingToastUtil.showShort(
-              widget.controller._loadingEndWithToastMessage.value, context);
-        } else {
-          widget
-              .toastMethod(widget.controller._loadingEndWithToastMessage.value);
         }
       }
     }
@@ -467,8 +478,8 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       children: <Widget>[
         rootChild,
         Offstage(
-          offstage: widget.controller.refreshMode.value !=
-              ZekingRefreshStatus.Loading,
+          offstage: widget.controller.loadingMode.value !=
+              ZekingLoadingStatus.Loading,
           child: loadingWidget,
         )
       ],
@@ -488,6 +499,9 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
 class ZekingRefreshController {
   ValueNotifier<ZekingRefreshStatus> refreshMode =
       new ValueNotifier(ZekingRefreshStatus.IDLE);
+
+  ValueNotifier<ZekingLoadingStatus> loadingMode =
+      new ValueNotifier(ZekingLoadingStatus.IDLE);
 
   ValueNotifier<String> _refreshFaildTip = new ValueNotifier(null);
   ValueNotifier<String> _refreshEmptyTip = new ValueNotifier(null);
@@ -559,16 +573,17 @@ class ZekingRefreshController {
 
   /// 业务处理 加载中
   void loading() {
-    refreshMode?.value = ZekingRefreshStatus.Loading;
+    loadingMode?.value = ZekingLoadingStatus.Loading;
   }
 
   void loadingEnd({String toastMsg}) {
     _loadingEndWithToastMessage?.value = toastMsg;
-    refreshMode?.value = ZekingRefreshStatus.LoadingEnd;
+    loadingMode?.value = ZekingLoadingStatus.LoadingEnd;
   }
 
   void dispose() {
     refreshMode.dispose();
+    loadingMode.dispose();
     refreshMode = null;
   }
 }

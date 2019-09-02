@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+## 0.0.9
+
+    将 业务逻辑 状态 Loading 和 LoadingEnd  单独抽取出来，防止和loadmore 相关状态之间存在冲突，倒是页面显示异常
+
 ## 0.0.8
 
     修复当canLoadMore为false，canRefresh为true的时候，
