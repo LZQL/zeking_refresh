@@ -17,8 +17,8 @@ DerivedData/
 .generated/
 
 Generated.xcconfig
-android
-ios
+#android
+#ios
 *.pbxuser
 *.mode1v3
 *.mode2v3
