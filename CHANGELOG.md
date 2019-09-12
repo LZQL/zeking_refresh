@@ -1,6 +1,14 @@
 
 # ChangeLog
 
+## 0.0.11
+
+    修复0.0.10不完善的bug
+
+## 0.0.10
+
+    修复与NestedScrollView配合的时候，加载更多存在的问题
+
 ## 0.0.9
 
     将 业务逻辑 状态 Loading 和 LoadingEnd  单独抽取出来，防止和loadmore 相关状态之间存在冲突，倒是页面显示异常

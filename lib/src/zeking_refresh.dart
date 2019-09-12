@@ -37,7 +37,7 @@ enum ZekingRefreshStatus {
 }
 
 /// 业务 loading 状态
-enum ZekingLoadingStatus{
+enum ZekingLoadingStatus {
   IDLE,
   Loading,
   LoadingEnd,
@@ -158,45 +158,30 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
     widget.controller.refreshMode.addListener(_handleRefreshValueChanged);
     widget.controller.loadingMode.addListener(_handleLoadingValueChanged);
 
-//    if (widget.useScrollController) {
-    if (widget.scrollController == null) {
-      _scrollController = widget.child is ScrollView &&
-              (widget.child as ScrollView).controller != null
-          ? (widget.child as ScrollView).controller
-          : new ScrollController();
-    } else {
-      _scrollController = widget.scrollController;
+    if (widget.useScrollController) {
+      if (widget.scrollController == null) {
+        _scrollController = widget.child is ScrollView &&
+                (widget.child as ScrollView).controller != null
+            ? (widget.child as ScrollView).controller
+            : new ScrollController();
+      } else {
+        _scrollController = widget.scrollController;
+      }
     }
-//    }
 
-    if (widget.canLoadMore) {
+    if (widget.canLoadMore && widget.useScrollController) {
       /// 监听滚动事件
       _scrollController.addListener(() {
         // 如果滚动到底部
         if (_scrollController.position.maxScrollExtent ==
             (_scrollController.position.pixels)) {
-          if (widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.Refreshing_LoadingView &&
-              widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.Refreshing_LoadingView_ing &&
-              widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.Refreshing &&
-              widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.LoadMore_Faild &&
-              widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.LoadMore_NoMore &&
-              widget.controller.refreshMode.value !=
-                  ZekingRefreshStatus.LoadMoreing_ing) {
-            widget.controller.refreshMode.value =
-                ZekingRefreshStatus.LoadMoreing_ing;
-            widget.onLoading();
-          }
+          tryLoadMore();
         }
       });
     }
   }
 
-  void _handleLoadingValueChanged(){
+  void _handleLoadingValueChanged() {
     // 业务逻辑 加载中 结束
     if (widget.controller.loadingMode.value == ZekingLoadingStatus.LoadingEnd) {
       if (widget.controller._loadingEndWithToastMessage.value != null &&
@@ -417,39 +402,88 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
       ));
 
       if (widget.canRefresh) {
-        rootChild = ZekingRefreshIndicator(
-          controller: widget.controller,
-          displacement:
-              widget.displacement == null ? 40.0 : widget.displacement,
-          onRefresh: widget.onRefresh,
-          child: CustomScrollView(
-            controller: widget.useScrollController ? _scrollController : null,
+        if (widget.useScrollController) {
+          rootChild = ZekingRefreshIndicator(
+            controller: widget.controller,
+            displacement:
+                widget.displacement == null ? 40.0 : widget.displacement,
+            onRefresh: widget.onRefresh,
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: widget.physics ??
+                  ZekingRefreshScrollPhysics(enableOverScroll: false),
+              slivers: List.from(slivers, growable: true),
+            ),
+          );
+        } else {
+          rootChild = ZekingRefreshIndicator(
+            controller: widget.controller,
+            displacement:
+                widget.displacement == null ? 40.0 : widget.displacement,
+            onRefresh: widget.onRefresh,
+            child: NotificationListener(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification) {
+                    if (notification.metrics.axis == Axis.vertical) {
+                      if (notification.metrics.pixels >=
+                          notification.metrics.maxScrollExtent) {
+                        tryLoadMore();
+                        return false;
+                      }
+                    }
+                  }
+                  return false;
+                },
+                child: CustomScrollView(
+                  physics: widget.physics ??
+                      ZekingRefreshScrollPhysics(enableOverScroll: false),
+                  slivers: List.from(slivers, growable: true),
+                )),
+          );
+        }
+      } else {
+        if (widget.useScrollController) {
+          rootChild = CustomScrollView(
+            controller: _scrollController,
             physics: widget.physics ??
                 ZekingRefreshScrollPhysics(enableOverScroll: false),
             slivers: List.from(slivers, growable: true),
-          ),
-        );
-      } else {
-        rootChild = CustomScrollView(
-          controller: widget.useScrollController ? _scrollController : null,
-          physics: widget.physics ??
-              ZekingRefreshScrollPhysics(enableOverScroll: false),
-          slivers: List.from(slivers, growable: true),
-        );
+          );
+        } else {
+          rootChild = NotificationListener(
+            onNotification: (notification) {
+              if (notification is ScrollUpdateNotification) {
+                if (notification.metrics.axis == Axis.vertical) {
+                  if (notification.metrics.pixels >=
+                      notification.metrics.maxScrollExtent) {
+                    tryLoadMore();
+                    return false;
+                  }
+                }
+              }
+              return false;
+            },
+            child: CustomScrollView(
+              physics: widget.physics ??
+                  ZekingRefreshScrollPhysics(enableOverScroll: false),
+              slivers: List.from(slivers, growable: true),
+            ),
+          );
+        }
       }
     } else {
       if (widget.canRefresh) {
-
         if (widget.child is ScrollView) {
           List<Widget> slivers;
 
-          slivers = List.from((widget.child as ScrollView).buildSlivers(context),
+          slivers = List.from(
+              (widget.child as ScrollView).buildSlivers(context),
               growable: true);
 
           rootChild = ZekingRefreshIndicator(
             controller: widget.controller,
             displacement:
-            widget.displacement == null ? 40.0 : widget.displacement,
+                widget.displacement == null ? 40.0 : widget.displacement,
             onRefresh: widget.onRefresh,
             child: CustomScrollView(
               controller: widget.useScrollController ? _scrollController : null,
@@ -462,13 +496,11 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
           rootChild = ZekingRefreshIndicator(
             controller: widget.controller,
             displacement:
-            widget.displacement == null ? 40.0 : widget.displacement,
+                widget.displacement == null ? 40.0 : widget.displacement,
             onRefresh: widget.onRefresh,
             child: widget.child,
           );
         }
-
-
       } else {
         rootChild = widget.child;
       }
@@ -490,9 +522,29 @@ class _ZekingRefreshState extends State<ZekingRefresh> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    if(_scrollController!=null){
+      _scrollController.dispose();
+    }
+
     widget.controller.refreshMode.removeListener(_handleRefreshValueChanged);
     super.dispose();
+  }
+
+  void tryLoadMore() {
+    if (widget.controller.refreshMode.value !=
+            ZekingRefreshStatus.Refreshing_LoadingView &&
+        widget.controller.refreshMode.value !=
+            ZekingRefreshStatus.Refreshing_LoadingView_ing &&
+        widget.controller.refreshMode.value != ZekingRefreshStatus.Refreshing &&
+        widget.controller.refreshMode.value !=
+            ZekingRefreshStatus.LoadMore_Faild &&
+        widget.controller.refreshMode.value !=
+            ZekingRefreshStatus.LoadMore_NoMore &&
+        widget.controller.refreshMode.value !=
+            ZekingRefreshStatus.LoadMoreing_ing) {
+      widget.controller.refreshMode.value = ZekingRefreshStatus.LoadMoreing_ing;
+      widget.onLoading();
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 name: zeking_refresh
 description: 一个支持刷新加载中，刷新失败，刷新空数据，加载更多加载中，加载更多失败，加载更多加载全部数据，业务loading的刷新组件
-version: 0.0.9
+version: 0.0.11
 author: Zeking Lee <396298154@qq.com>
 repository: https://github.com/LZQL/zeking_refresh
 homepage: https://github.com/LZQL/zeking_refresh
