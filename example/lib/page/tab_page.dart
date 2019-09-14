@@ -27,7 +27,7 @@ class _GeneralMonthListState extends State<TabPage> with AutomaticKeepAliveClien
         controller: _refreshController,
         onRefresh: onRefresh,
         onLoading: onLoading,
-        useScrollController: false,
+        useScrollController: false, /// 和NestedScrollView使用，这边要设置false，不清楚的自行熟悉NestedScrollView的用法
         child: ListView.builder(
           padding: EdgeInsets.all(0),
           itemBuilder: (context, index) {
