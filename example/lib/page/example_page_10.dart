@@ -3,15 +3,17 @@ import 'package:zeking_refresh_example/widget/custom_sliver_app_bar_delegate.dar
 
 import 'tab_page.dart';
 
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart' as extended;
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart'
+    as extended;
 
 /// 和 NestedScrollView 使用
-class ExamplePage09 extends StatefulWidget {
+class ExamplePage10 extends StatefulWidget {
   @override
-  _ExamplePage09State createState() => _ExamplePage09State();
+  _ExamplePage10State createState() => _ExamplePage10State();
 }
 
-class _ExamplePage09State extends State<ExamplePage09>  with SingleTickerProviderStateMixin{
+class _ExamplePage10State extends State<ExamplePage10>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
   List<String> data;
   int addIndex = 1;
@@ -21,47 +23,43 @@ class _ExamplePage09State extends State<ExamplePage09>  with SingleTickerProvide
 
   PageController _pageController = PageController(initialPage: 0);
   var _isPageCanChanged = true;
+
   @override
   void initState() {
     _scrollController = new ScrollController();
     _tabController = new TabController(length: 2, vsync: this);
     data = new List();
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyTitleBar(
-        '和 NestedScrollView 使用 1',
+        '和 NestedScrollView 使用 2',
       ),
       body: buildBody(),
     );
   }
-  
-  Widget buildBody(){
+
+  Widget buildBody() {
     return extended.NestedScrollView(
       controller: _scrollController,
-      headerSliverBuilder:
-          (BuildContext context, bool innerBoxIsScrolled) {
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           SliverToBoxAdapter(
             child: _buildHeader(),
           ),
-          SliverPersistentHeader(
-              pinned: true,
-              floating: true,
-              delegate: CustomSliverAppBarDelegate(
-                  minHeight: Dimens.size(111),
-                  maxHeight: Dimens.size(111),
-                  child: _buildTabTitle())),
+//          SliverPersistentHeader(
+//              pinned: true,
+//              floating: true,
+//              delegate: CustomSliverAppBarDelegate(
+//                  minHeight: Dimens.size(111),
+//                  maxHeight: Dimens.size(111),
+//                  child: _buildTabTitle()))
         ];
       },
-      pinnedHeaderSliverHeightBuilder: (){
-        return Dimens.size(111);
-      },
-      innerScrollPositionKeyBuilder: (){
+      innerScrollPositionKeyBuilder: () {
         if (_tabController.index == 0) {
           return Key('Tab0');
         } else {
@@ -72,7 +70,7 @@ class _ExamplePage09State extends State<ExamplePage09>  with SingleTickerProvide
     );
   }
 
-  Widget _buildHeader(){
+  Widget _buildHeader() {
     return Container(
       height: Dimens.size(400),
       color: Colors.red,
@@ -124,33 +122,46 @@ class _ExamplePage09State extends State<ExamplePage09>  with SingleTickerProvide
   }
 
   Widget _buildRankListPageView() {
-    return PageView.builder(
-      itemCount: 2,
-      onPageChanged: (index) {
-        if (_isPageCanChanged) {
-          //由于pageview切换是会回调这个方法,又会触发切换tabbar的操作,所以定义一个flag,控制pageview的回调
-          _onPageChange(index);
-        }
-      },
-      controller: _pageController,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          return extended.NestedScrollViewInnerScrollPositionKeyWidget(
-              Key('Tab0'),
-              TabPage(
-                tag: 'Tab1',
-              ));
-        } else {
-          return extended.NestedScrollViewInnerScrollPositionKeyWidget(
-              Key('Tab1'),
-              TabPage(
-                tag: 'Tab2',
-              ));
-        }
-      },
+    return Column(
+      children: <Widget>[
+//        SliverPersistentHeader(
+//            pinned: true,
+//            floating: true,
+//            delegate: CustomSliverAppBarDelegate(
+//                minHeight: Dimens.size(111),
+//                maxHeight: Dimens.size(111),
+//                child: _buildTabTitle())),
+        _buildTabTitle(),
+        Expanded(
+          child: PageView.builder(
+            itemCount: 2,
+            onPageChanged: (index) {
+              if (_isPageCanChanged) {
+                //由于pageview切换是会回调这个方法,又会触发切换tabbar的操作,所以定义一个flag,控制pageview的回调
+                _onPageChange(index);
+              }
+            },
+            controller: _pageController,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                return extended.NestedScrollViewInnerScrollPositionKeyWidget(
+                    Key('Tab0'),
+                    TabPage(
+                      tag: 'Tab1',
+                    ));
+              } else {
+                return extended.NestedScrollViewInnerScrollPositionKeyWidget(
+                    Key('Tab1'),
+                    TabPage(
+                      tag: 'Tab2',
+                    ));
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
-
 
   _onPageChange(int index, {PageController p, TabController t}) async {
     if (p != null) {
@@ -166,10 +177,10 @@ class _ExamplePage09State extends State<ExamplePage09>  with SingleTickerProvide
   }
 
 //  void onRefresh() {
-//    print('onRefresh');
+//    print('onRefresh:'+widget.tag);
 //  }
 //
 //  void onLoading() {
-//    print('onLoading');
+//    print('onLoading:'+widget.tag);
 //  }
 }

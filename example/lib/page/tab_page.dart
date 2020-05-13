@@ -3,6 +3,9 @@ import 'package:zeking_refresh_example/common/index_all.dart';
 import 'my_refresh.dart';
 
 class TabPage extends StatefulWidget {
+  final String tag;
+
+  const TabPage({Key key, this.tag}) : super(key: key);
 
   @override
   _GeneralMonthListState createState() => _GeneralMonthListState();
@@ -33,7 +36,7 @@ class _GeneralMonthListState extends State<TabPage> with AutomaticKeepAliveClien
           itemBuilder: (context, index) {
             return buildItem(index);
           },
-          itemCount: 30,
+          itemCount: 2,
         ),
       ),
     );
@@ -44,7 +47,13 @@ class _GeneralMonthListState extends State<TabPage> with AutomaticKeepAliveClien
     return Column(
       children: <Widget>[
         Container(
-          height: Dimens.size(100),
+          height: Dimens.size(111),
+          color: Colors.red,
+          alignment: Alignment.center,
+          child: Text('$index'),
+        ),
+        Container(
+          height: Dimens.size(111),
           alignment: Alignment.center,
           child: Text('$index'),
         ),
@@ -57,11 +66,11 @@ class _GeneralMonthListState extends State<TabPage> with AutomaticKeepAliveClien
   ///================================= 网络请求 ===============================================
 
   void onRefresh() {
-    print('onRefresh');
+    print('onRefresh:'+widget.tag);
   }
 
   void onLoading() {
-    print('onLoading');
+    print('onLoading:'+widget.tag);
   }
 
   @override

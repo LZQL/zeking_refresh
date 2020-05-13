@@ -1,6 +1,7 @@
 import 'package:zeking_refresh_example/common/index_all.dart';
-
 import 'example_page_04.dart';
+import 'example_page_10.dart';
+import 'example_page_11.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -42,8 +43,14 @@ class _HomePageState extends State<HomePage> {
           ItemWidget('8. 和 CustomScrollView 使用 ', () {
             NavigatorUtil.pushPage(context, ExamplePage08());
           }),
-          ItemWidget('9. 和 NestedScrollView 使用 ', () {
+          ItemWidget('9. 和 NestedScrollView 使用 1', () {
             NavigatorUtil.pushPage(context, ExamplePage09());
+          }),
+          ItemWidget('10. 和 NestedScrollView 使用 2', () {
+            NavigatorUtil.pushPage(context, ExamplePage10());
+          }),
+          ItemWidget('10. 和 NestedScrollView 使用 3', () {
+            NavigatorUtil.pushPage(context, ExamplePage11());
           }),
         ],
       ),
